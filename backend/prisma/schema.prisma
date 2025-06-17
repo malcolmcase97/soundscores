@@ -29,36 +29,41 @@ model artists {
 }
 
 model artist_urls {
-  id        Int     @id @default(autoincrement())
-  artist_id Int
-  url       String
-  artists   artists @relation(fields: [artist_id], references: [id])
+  id        Int       @id @default(autoincrement())
+  artist_id Int?      // optional
+  url       String?   // optional
+
+  artists   artists?  @relation(fields: [artist_id], references: [id]) // optional relation
 }
 
 model artist_aliases {
-  id         Int     @id @default(autoincrement())
-  artist_id  Int
-  alias_name String
-  artists    artists @relation(fields: [artist_id], references: [id])
+  id         Int       @id @default(autoincrement())
+  artist_id  Int?
+  alias_name String?
+
+  artists    artists?  @relation(fields: [artist_id], references: [id])
 }
 
 model artist_name_variations {
-  id        Int     @id @default(autoincrement())
-  artist_id Int
-  variation String
-  artists   artists @relation(fields: [artist_id], references: [id])
+  id         Int       @id @default(autoincrement())
+  artist_id  Int?
+  variation  String?
+
+  artists    artists?  @relation(fields: [artist_id], references: [id])
 }
 
 model artist_members {
-  id          Int     @id @default(autoincrement())
-  artist_id   Int
-  member_name String
-  artists     artists @relation(fields: [artist_id], references: [id])
+  id          Int       @id @default(autoincrement())
+  artist_id   Int?
+  member_name String?
+
+  artists     artists?  @relation(fields: [artist_id], references: [id])
 }
 
 model artist_groups {
-  id         Int     @id @default(autoincrement())
-  artist_id  Int
-  group_name String
-  artists    artists @relation(fields: [artist_id], references: [id])
+  id         Int       @id @default(autoincrement())
+  artist_id  Int?
+  group_name String?
+
+  artists    artists?  @relation(fields: [artist_id], references: [id])
 }
