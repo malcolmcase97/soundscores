@@ -7,51 +7,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model artists {
+model Artist {
   id                     Int                      @id
   name                   String?
   real_name              String?
   profile                String?
   data_quality           String?
   full_data              Json?
-  artist_aliases         artist_aliases[]
-  artist_groups          artist_groups[]
-  artist_members         artist_members[]
-  artist_name_variations artist_name_variations[]
-  artist_urls            artist_urls[]
+
+  artist_aliases         ArtistAlias[]
+  artist_groups          ArtistGroup[]
+  artist_members         ArtistMember[]
+  artist_name_variations ArtistNameVariation[]
+  artist_urls            ArtistUrl[]
 }
 
-model artist_urls {
+model ArtistUrl {
+  id        Int     @id @default(autoincrement())
   artist_id Int?
   url       String?
-  id        Int      @id @default(autoincrement())
-  artists   artists? @relation(fields: [artist_id], references: [id])
+
+  artist    Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
 }
 
-model artist_aliases {
+model ArtistAlias {
+  id         Int     @id @default(autoincrement())
   artist_id  Int?
   alias_name String?
-  id         Int      @id @default(autoincrement())
-  artists    artists? @relation(fields: [artist_id], references: [id])
+
+  artist     Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
 }
 
-model artist_name_variations {
+model ArtistNameVariation {
+  id        Int     @id @default(autoincrement())
   artist_id Int?
   variation String?
-  id        Int      @id @default(autoincrement())
-  artists   artists? @relation(fields: [artist_id], references: [id])
+
+  artist    Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
 }
 
-model artist_members {
+model ArtistMember {
+  id          Int     @id @default(autoincrement())
   artist_id   Int?
   member_name String?
-  id          Int      @id @default(autoincrement())
-  artists     artists? @relation(fields: [artist_id], references: [id])
+
+  artist      Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
 }
 
-model artist_groups {
+model ArtistGroup {
+  id         Int     @id @default(autoincrement())
   artist_id  Int?
   group_name String?
-  id         Int      @id @default(autoincrement())
-  artists    artists? @relation(fields: [artist_id], references: [id])
+
+  artist     Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
 }
