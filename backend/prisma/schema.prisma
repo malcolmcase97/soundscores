@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,56 +8,50 @@ datasource db {
 }
 
 model artists {
-  id             Int               @id
-  name           String?
-  real_name      String?
-  profile        String?
-  data_quality   String?
-  full_data      Json?
-
-  artist_urls            artist_urls[]
+  id                     Int                      @id
+  name                   String?
+  real_name              String?
+  profile                String?
+  data_quality           String?
+  full_data              Json?
   artist_aliases         artist_aliases[]
-  artist_name_variations artist_name_variations[]
-  artist_members         artist_members[]
   artist_groups          artist_groups[]
+  artist_members         artist_members[]
+  artist_name_variations artist_name_variations[]
+  artist_urls            artist_urls[]
 }
 
 model artist_urls {
-  id        Int       @id @default(autoincrement())
-  artist_id Int?      // optional
-  url       String?   // optional
-
-  artists   artists?  @relation(fields: [artist_id], references: [id]) // optional relation
+  artist_id Int?
+  url       String?
+  id        Int      @id @default(autoincrement())
+  artists   artists? @relation(fields: [artist_id], references: [id])
 }
 
 model artist_aliases {
-  id         Int       @id @default(autoincrement())
   artist_id  Int?
   alias_name String?
-
-  artists    artists?  @relation(fields: [artist_id], references: [id])
+  id         Int      @id @default(autoincrement())
+  artists    artists? @relation(fields: [artist_id], references: [id])
 }
 
 model artist_name_variations {
-  id         Int       @id @default(autoincrement())
-  artist_id  Int?
-  variation  String?
-
-  artists    artists?  @relation(fields: [artist_id], references: [id])
+  artist_id Int?
+  variation String?
+  id        Int      @id @default(autoincrement())
+  artists   artists? @relation(fields: [artist_id], references: [id])
 }
 
 model artist_members {
-  id          Int       @id @default(autoincrement())
   artist_id   Int?
   member_name String?
-
-  artists     artists?  @relation(fields: [artist_id], references: [id])
+  id          Int      @id @default(autoincrement())
+  artists     artists? @relation(fields: [artist_id], references: [id])
 }
 
 model artist_groups {
-  id         Int       @id @default(autoincrement())
   artist_id  Int?
   group_name String?
-
-  artists    artists?  @relation(fields: [artist_id], references: [id])
+  id         Int      @id @default(autoincrement())
+  artists    artists? @relation(fields: [artist_id], references: [id])
 }
