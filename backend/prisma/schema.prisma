@@ -7,67 +7,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Artist {
-  id                     Int                      @id
-  name                   String?
-  real_name              String?
-  profile                String?
-  data_quality           String?
-  full_data              Json?
+model Artists {
+  id                       Int                       @id
+  name                     String?
+  real_name                String?
+  profile                  String?
+  data_quality             String?
+  full_data                Json?
 
-  artist_aliases         ArtistAlias[]
-  artist_groups          ArtistGroup[]
-  artist_members         ArtistMember[]
-  artist_name_variations ArtistNameVariation[]
-  artist_urls            ArtistUrl[]
+  artist_aliases           ArtistAliases[]
+  artist_groups            ArtistGroups[]
+  artist_members           ArtistMembers[]
+  artist_name_variations   ArtistNameVariations[]
+  artist_urls              ArtistUrls[]
 }
 
-model ArtistUrl {
-  id        Int     @id @default(autoincrement())
-  artist_id Int?
-  url       String?
+model ArtistUrls {
+  id         Int       @id @default(autoincrement())
+  artist_id  Int?
+  url        String?
 
-  artist    Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+  artists    Artists?  @relation(fields: [artist_id], references: [id], onDelete: SetNull)
 
   @@index([artist_id])
 }
 
-model ArtistAlias {
-  id         Int     @id @default(autoincrement())
+model ArtistAliases {
+  id         Int       @id @default(autoincrement())
   artist_id  Int?
   alias_name String?
 
-  artist     Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+  artists    Artists?  @relation(fields: [artist_id], references: [id], onDelete: SetNull)
 
   @@index([artist_id])
 }
 
-model ArtistNameVariation {
-  id        Int     @id @default(autoincrement())
-  artist_id Int?
-  variation String?
-
-  artist    Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
-
-  @@index([artist_id])
-}
-
-model ArtistMember {
-  id          Int     @id @default(autoincrement())
-  artist_id   Int?
-  member_name String?
-
-  artist      Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
-
-  @@index([artist_id])
-}
-
-model ArtistGroup {
-  id         Int     @id @default(autoincrement())
+model ArtistNameVariations {
+  id         Int       @id @default(autoincrement())
   artist_id  Int?
-  group_name String?
+  variation  String?
 
-  artist     Artist? @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+  artists    Artists?  @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
+}
+
+model ArtistMembers {
+  id           Int       @id @default(autoincrement())
+  artist_id    Int?
+  member_name  String?
+
+  artists      Artists?  @relation(fields: [artist_id], references: [id], onDelete: SetNull)
+
+  @@index([artist_id])
+}
+
+model ArtistGroups {
+  id          Int       @id @default(autoincrement())
+  artist_id   Int?
+  group_name  String?
+
+  artists     Artists?  @relation(fields: [artist_id], references: [id], onDelete: SetNull)
 
   @@index([artist_id])
 }
