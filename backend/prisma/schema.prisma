@@ -1,3 +1,6 @@
+// To migrate changes: npx prisma migrate dev --name added_column
+// Generate the new prisma with: npx prisma generate
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,6 +9,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ---Artists Section---
 
 model Artists {
   id                       Int                       @id
@@ -20,6 +25,7 @@ model Artists {
   artist_members           ArtistMembers[]
   artist_name_variations   ArtistNameVariations[]
   artist_urls              ArtistUrls[]
+  master_artists           MasterArtists[]
 }
 
 model ArtistUrls {
@@ -70,4 +76,66 @@ model ArtistGroups {
   artists     Artists?  @relation(fields: [artist_id], references: [id], onDelete: SetNull)
 
   @@index([artist_id])
+}
+
+// --- Masters section ---
+
+model Masters {
+  id            Int                @id
+  title         String?
+  year          Int?
+  main_release  Int?               // references Releases (not implemented yet)
+  data_quality  String?
+  full_data     Json?
+
+  master_artists MasterArtists[]
+  master_genres  MasterGenres[]
+  master_styles  MasterStyles[]
+  master_videos  MasterVideos[]
+
+  @@index([main_release])
+}
+
+model MasterArtists {
+  master_id   Int
+  artist_id   Int
+  join_phrase String?    // e.g., featuring, with, and, etc.
+  anv         String?    // artist name variations
+
+  masters     Masters    @relation(fields: [master_id], references: [id], onDelete: Cascade)
+  artists     Artists    @relation(fields: [artist_id], references: [id], onDelete: Cascade)
+
+  @@id([master_id, artist_id])  // composite primary key
+  @@index([artist_id])
+}
+
+model MasterGenres {
+  master_id  Int
+  genre      String
+
+  masters    Masters   @relation(fields: [master_id], references: [id], onDelete: Cascade)
+
+  @@id([master_id, genre])  // composite primary key
+  @@index([genre])
+}
+
+model MasterStyles {
+  master_id  Int
+  style      String
+
+  masters    Masters   @relation(fields: [master_id], references: [id], onDelete: Cascade)
+
+  @@id([master_id, style])  // composite primary key
+  @@index([style])
+}
+
+model MasterVideos {
+  id          Int       @id @default(autoincrement())
+  master_id   Int
+  title       String?
+  description String?
+
+  masters     Masters   @relation(fields: [master_id], references: [id], onDelete: Cascade)
+
+  @@index([master_id])
 }
