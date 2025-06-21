@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 const prisma = new PrismaClient();
 
 const artistsRouter = require('./routes/artists');
+const masterRouter = require('./routes/masters');
 
 //Middleware
 app.use(cors());
@@ -20,6 +21,9 @@ app.get('/', (req, res) => {
 
 // Artist-related endpoints
 app.use('/api/artists', artistsRouter);
+
+// Master-related endpoints
+app.use('/api/masters', masterRouter);
 
 // Start server
 app.listen(PORT, () => {
