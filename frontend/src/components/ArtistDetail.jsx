@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const ArtistDetail = () => {
-  const { id } = useParams(); // <-- get artist ID from the URL
+  const { id } = useParams();
   const [artist, setArtist] = useState(null);
   const [error, setError] = useState(null);
 
@@ -57,6 +57,20 @@ const ArtistDetail = () => {
           </li>
         ))}
       </ul>
+
+      {/* New section: Albums / Masters */}
+      {artist.masters?.length > 0 && (
+        <>
+          <h3>Albums</h3>
+          <ul>
+            {artist.masters.map(master => (
+              <li key={master.id}>
+                <Link to={`/masters/${master.id}`}>{master.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };
