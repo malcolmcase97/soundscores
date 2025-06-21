@@ -29,10 +29,21 @@ router.get('/:id', async (req, res) => {
         artist_name_variations: true,
         artist_members: true,
         artist_groups: true,
+        master_artists: {
+          include: {
+            masters: true,
+          },
+        },
       },
     });
 
     if (!artist) return res.status(404).send('Artist not found');
+
+    // Flatten master data for easier use in frontend
+    const masters = artist.master_artists.map(ma => ma.masters);
+    artist.masters = masters;
+    delete artist.master_artists;
+
     res.json(artist);
   } catch (err) {
     console.error(err);
