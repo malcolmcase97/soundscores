@@ -26,6 +26,10 @@ model Artists {
   artist_name_variations   ArtistNameVariations[]
   artist_urls              ArtistUrls[]
   master_artists           MasterArtists[]
+  release_artists         ReleaseArtists[]
+  release_extra_artists   ReleaseExtraArtists[]
+  track_extra_artists    TrackExtraArtists[]
+
 }
 
 model ArtistUrls {
@@ -138,4 +142,158 @@ model MasterVideos {
   masters     Masters   @relation(fields: [master_id], references: [id], onDelete: Cascade)
 
   @@index([master_id])
+}
+
+/// -------------------
+/// 📀 Releases Section
+/// -------------------
+
+model Releases {
+  id             Int                     @id
+  master_id      Int?
+  title          String?
+  country        String?
+  released_date  String?
+  notes          String?
+  data_quality   String?
+  full_data      Json?
+
+  release_artists         ReleaseArtists[]
+  release_extra_artists   ReleaseExtraArtists[]
+  release_formats         ReleaseFormats[]
+  release_videos          ReleaseVideos[]
+  release_tracks          ReleaseTracklist[]
+  release_labels          ReleaseLabels[]
+  release_companies       ReleaseCompanies[]
+  release_genres          ReleaseGenres[]
+  release_styles          ReleaseStyles[]
+  release_identifiers     ReleaseIdentifiers[]
+  track_extra_artists   TrackExtraArtists[]
+}
+
+model ReleaseArtists {
+  release_id   Int
+  artist_id    Int
+  role         String?
+
+  releases     Releases  @relation(fields: [release_id], references: [id], onDelete: Cascade)
+  artists      Artists   @relation(fields: [artist_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, artist_id])
+  @@index([artist_id])
+}
+
+model ReleaseExtraArtists {
+  release_id   Int
+  artist_id    Int
+  anv          String?
+  role         String?
+
+  releases     Releases  @relation(fields: [release_id], references: [id], onDelete: Cascade)
+  artists      Artists   @relation(fields: [artist_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, artist_id])
+  @@index([artist_id])
+}
+
+model ReleaseGenres {
+  release_id  Int
+  genre       String
+
+  releases    Releases @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, genre])
+  @@index([genre])
+}
+
+model ReleaseStyles {
+  release_id  Int
+  style       String
+
+  releases    Releases @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, style])
+  @@index([style])
+}
+
+model ReleaseFormats {
+  id           Int       @id @default(autoincrement())
+  release_id   Int
+  format_desc  String?
+
+  releases     Releases  @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@index([release_id])
+}
+
+model ReleaseVideos {
+  id           Int       @id @default(autoincrement())
+  release_id   Int
+  title        String?
+  description  String?
+
+  releases     Releases  @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@index([release_id])
+}
+
+model ReleaseTracklist {
+  track_id           Int       @id @default(autoincrement())
+  release_id         Int
+  position           String?
+  title              String?
+  duration           String?
+
+  releases           Releases           @relation(fields: [release_id], references: [id], onDelete: Cascade)
+  track_extra_artists  TrackExtraArtists[]
+
+  @@index([release_id])
+}
+
+model TrackExtraArtists {
+  release_id   Int
+  track_id     Int
+  artist_id    Int
+  name         String?
+  anv          String?
+  role         String?
+
+  releases     Releases          @relation(fields: [release_id], references: [id], onDelete: Cascade)
+  track        ReleaseTracklist  @relation(fields: [track_id], references: [track_id], onDelete: Cascade)
+  artist       Artists           @relation(fields: [artist_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, track_id, artist_id])
+  @@index([track_id])
+  @@index([artist_id])
+}
+
+model ReleaseLabels {
+  release_id   Int
+  label_id     Int
+  // future: label relation
+
+  releases     Releases  @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, label_id])
+}
+
+model ReleaseCompanies {
+  release_id   Int
+  company_id   Int
+  role         String?
+
+  releases     Releases  @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@id([release_id, company_id])
+}
+
+model ReleaseIdentifiers {
+  id          Int      @id @default(autoincrement())
+  release_id  Int
+  type        String?  // e.g., Barcode, Catalog Number
+  value       String?
+
+  releases    Releases @relation(fields: [release_id], references: [id], onDelete: Cascade)
+
+  @@index([release_id])
 }
